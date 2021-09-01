@@ -1,3 +1,4 @@
+import os
 import pickle
 
 import pygame
@@ -25,9 +26,7 @@ from settings import (
     cargo_img,
     cargo_on_target_img,
     floor_img,
-    level_map,
     player_img,
-    player_index,
     player_on_target_img,
     target_img,
     wall_img,
@@ -35,6 +34,9 @@ from settings import (
 
 pygame.init()
 pygame.font.init()
+
+font = pygame.font.SysFont("Arial", 25)
+max_levels = len(os.listdir("levels"))
 
 
 class Player:
@@ -150,7 +152,8 @@ class Level:
                     self.player.y = player_old_pos[1]
 
         if self.check_win():
-            self.__init__(self.level + 1)
+            if self.level < max_levels:
+                self.__init__(self.level + 1)
 
     def check_win(self):
         for cargo in self.cargos:
@@ -170,11 +173,13 @@ def level_from_string(map_str: str):
 
 level = Level()
 
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
+win = pygame.display.set_mode((WIDTH, HEIGHT + 40))
+screen = pygame.Surface((WIDTH, HEIGHT))
 clock = pygame.time.Clock()
 
 while True:
     clock.tick(60)
+    win.fill("white")
     screen.fill("#ded6ad")
 
     for event in pygame.event.get():
@@ -187,6 +192,12 @@ while True:
             elif event.key == pygame.K_SPACE:
                 level = Level(level.level)
 
+    text = font.render(f"Level: {level.level}/{max_levels}", True, "#222222")
+    text_rect = text.get_rect(center=((WIDTH // 2, 20)))
+    win.blit(
+        text, text_rect
+    )
     level.draw(screen)
+    win.blit(screen, (0, 40))
 
     pygame.display.flip()
