@@ -36,12 +36,12 @@ font = pygame.font.SysFont("Arial", 20)
 current_tile = CARGO
 
 tile_types = {
-    "Cargo": 1,
-    "Cargo on target": 2,
-    "Target": 3,
-    "Wall": 4,
-    "Floor": 5,
-    "Player": 6,
+    "Cargo": [1, CARGO],
+    "Cargo on target": [2, CARGO_TARGET],
+    "Target": [3, TARGET],
+    "Wall": [4, WALL],
+    "Floor": [5, FLOOR],
+    "Player": [6, PLAYER],
 }
 
 grid = [[FLOOR for _ in range(COLS)] for _ in range(ROWS)]
@@ -50,8 +50,8 @@ prev_tile = None
 level = 1
 
 while True:
-    win.fill("#ffffff")
-    screen.fill("#000000")
+    win.fill("#282A36")
+    screen.fill("#282A36")
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
@@ -83,10 +83,17 @@ while True:
                     level = max(1, level - 1)
 
     for i, tile_type in enumerate(tile_types):
-        text = font.render(f"{tile_type} = {tile_types[tile_type]}", 1, "black")
+        if tile_types[tile_type][1] == current_tile:
+            text = font.render(
+                f"*{tile_type} = {tile_types[tile_type][0]}", 1, "#E3E4E0"
+            )
+        else:
+            text = font.render(
+                f"{tile_type} = {tile_types[tile_type][0]}", 1, "#E3E4E0"
+            )
         win.blit(text, (WIDTH + 50, i * 30 + HEIGHT // 4))
 
-    text = font.render(f"level = {level}", 1, "black")
+    text = font.render(f"level = {level}", 1, "#E3E4E0")
     win.blit(text, (WIDTH + 50, 10))
 
     if pygame.mouse.get_pressed()[0]:
@@ -97,6 +104,7 @@ while True:
                 if grid[y][x] in [FLOOR, TARGET]:
                     player_index = (x, y)
                 else:
+                    print(prev_tile)
                     grid[y][x] = prev_tile
             else:
                 grid[y][x] = current_tile

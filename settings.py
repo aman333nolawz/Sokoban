@@ -1,6 +1,8 @@
 import pygame
+import pickle
 
-from level import level_map, player_index
+with open("levels/level-1.pkl", "rb") as filp:
+    level_map, player_index = pickle.load(filp)
 
 WALL = "#"
 PLAYER = "P"

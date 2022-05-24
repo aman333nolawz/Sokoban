@@ -64,10 +64,13 @@ class Cargo:
 
 
 class Level:
-    def __init__(self, level=1):
+    def __init__(self, level=2):
+        global ROWS, COLS
         self.level = level
         with open(f"levels/level-{level}.pkl", "rb") as f:
             self.map, player_pos = pickle.load(f)
+            ROWS = len(self.map)
+            COLS = len(self.map[0])
         self.player = Player(*player_pos)
         self.cargos = []
         for i, row in enumerate(self.map):
@@ -113,16 +116,16 @@ class Level:
         cargo_vec = [0, 0]
         player_old_pos = (self.player.x, self.player.y)
 
-        if key == pygame.K_UP and up != WALL:
+        if key == pygame.K_UP and up != WALL and self.player.y - 1 >= 0:
             self.player.y -= 1
             cargo_vec[1] -= 1
-        elif key == pygame.K_DOWN and down != WALL:
+        elif key == pygame.K_DOWN and down != WALL and self.player.y + 1 < ROWS:
             self.player.y += 1
             cargo_vec[1] += 1
-        elif key == pygame.K_LEFT and left != WALL:
+        elif key == pygame.K_LEFT and left != WALL and self.player.x - 1 >= 0:
             self.player.x -= 1
             cargo_vec[0] -= 1
-        elif key == pygame.K_RIGHT and right != WALL:
+        elif key == pygame.K_RIGHT and right != WALL and self.player.x + 1 < COLS:
             self.player.x += 1
             cargo_vec[0] += 1
 
@@ -194,9 +197,7 @@ while True:
 
     text = font.render(f"Level: {level.level}/{max_levels}", True, "#222222")
     text_rect = text.get_rect(center=((WIDTH // 2, 20)))
-    win.blit(
-        text, text_rect
-    )
+    win.blit(text, text_rect)
     level.draw(screen)
     win.blit(screen, (0, 40))
 
