@@ -4,6 +4,7 @@ import pygame
 import pygame.display
 import pygame.font
 import pygame.mouse
+import pygame_gui
 
 from settings import (
     CARGO,
@@ -32,6 +33,7 @@ pygame.init()
 win = pygame.display.set_mode((WIDTH + 300, HEIGHT))
 screen = pygame.Surface((WIDTH, HEIGHT))
 font = pygame.font.SysFont("Arial", 20)
+manager = pygame_gui.UIManager(win.get_size())
 
 current_tile = CARGO
 
@@ -104,7 +106,6 @@ while True:
                 if grid[y][x] in [FLOOR, TARGET]:
                     player_index = (x, y)
                 else:
-                    print(prev_tile)
                     grid[y][x] = prev_tile
             else:
                 grid[y][x] = current_tile
